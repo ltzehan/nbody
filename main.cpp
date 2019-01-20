@@ -8,10 +8,11 @@ void print_help() {
 
 	printf("\n");
 	printf("-h: Prints this dialog\n");
-	printf("-n: Sets number of bodies (positive non-zero value expected)\n");
-	printf("-f: Sets number of frames (positive non-zero value expected)\n");
+	printf("-n: Sets number of bodies (positive integer expected)\n");
+	printf("-f: Sets number of frames (positive integer expected)\n");
+	printf("-t: Set timestep for each frame (positive float expected)\n");
 	printf("\n");
-	printf("EX: nbody.exe [-h] [-n N] [-f FRAMES]\n");
+	printf("EX: nbody.exe [-h] [-n N] [-f FRAMES] [-t TSTEP]\n");
 	printf("\n");
 
 }
@@ -22,7 +23,8 @@ void print_help() {
 enum class ParseFlag { OK, ERR, HELP };
 
 const char* NO_VAL_TEMPLATE = "No value specified for flag %s\n";
-const char* EXP_POS_TEMPLATE = "Expected positive non-zero integer for flag %s\n";
+const char* EXP_POS_INT_TEMPLATE = "Expected positive integer for flag %s\n";
+const char* EXP_POS_FLOAT_TEMPLATE = "Expected positive float for flag %s\n";
 
 // fills configuration with values from runtime arguments
 ParseFlag parse_flags(int argc, char* argv[], Config* config) {
@@ -60,7 +62,7 @@ ParseFlag parse_flags(int argc, char* argv[], Config* config) {
 						config->n = x;
 					}
 					else {
-						printf(EXP_POS_TEMPLATE, "-n");
+						printf(EXP_POS_INT_TEMPLATE, "-n");
 						return ParseFlag::ERR;
 					}
 				}
@@ -80,7 +82,27 @@ ParseFlag parse_flags(int argc, char* argv[], Config* config) {
 						config->frames = x;
 					}
 					else {
-						printf(EXP_POS_TEMPLATE, "-f");
+						printf(EXP_POS_INT_TEMPLATE, "-f");
+						return ParseFlag::ERR;
+					}
+				}
+			}
+			else if (s == "-t") {
+				// set timestep
+
+				if (++i >= argc) {
+					printf(NO_VAL_TEMPLATE, "-t");
+					return ParseFlag::ERR;
+				}
+				else {
+					float x = -1;
+					x = stof(argv[i]);
+
+					if (x > 0) {
+						config->tstep = x;
+					}
+					else {
+						printf(EXP_POS_FLOAT_TEMPLATE, "-t");
 						return ParseFlag::ERR;
 					}
 				}

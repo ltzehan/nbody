@@ -9,6 +9,7 @@ struct Config {
 	// default simulation configuration
 	int frames = 25;
 	int n = 2048;
+	float tstep = 0.2;	// we can worry about physical scales later
 };
 
 struct Simulation {
@@ -16,6 +17,7 @@ struct Simulation {
 	Simulation(const Config config) {
 		frames = config.frames;
 		n = config.n;
+		tstep = config.tstep;
 	}
 
 	void start();
@@ -26,6 +28,8 @@ private:
 	int frames;
 	// number of bodies
 	int n;
+	// timestep per frame
+	float tstep;
 
 	std::vector<Particle> ptlist;
 

@@ -30,8 +30,12 @@ void Simulation::start() {
 
 	printf("Finished initialization in %.4fs\n", elapsed_time);
 
-	printf("Simulation started for %d frames with %d bodies\n", frames, n);
-	
+	printf("Simulation started with parameters:\n");
+	printf("N       = %d\n", n);
+	printf("FRAMES  = %d\n", frames);
+	printf("TSTEP   = %f\n", tstep);
+	printf("\n");
+
 	// start time for simulation
 	start_time = Clock::now();
 
