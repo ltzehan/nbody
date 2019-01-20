@@ -11,12 +11,6 @@
 #include <random>
 #include "particle.h"
 
-void Particle::update() {
-
-	// update velocities
-
-}
-
 // initialize particle list and randomize properties
 BoundingBox Particle::randomize(std::vector<Particle>& ptlist, int n) {
 

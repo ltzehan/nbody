@@ -67,12 +67,23 @@ void Simulation::update() {
 		tree->add_particle(pt);
 	}
 
+	// reset bounding box to be updated for next iteration
+	bounding_box = BoundingBox();
+
 	// update particle properties
 	for (auto& pt : ptlist) {
+		
+		// using leapfrog integration with constant timestep (KDK; less time asymmetry)
+		float tmid = tstep / 2;
+		float3 vmid = pt.vel + pt.acc * tmid;	// kick
+
 		// compute force pairs and update particle acclerations
 		tree->calc_force(pt);
-		// update particle velocities and positions
-		pt.update();
+
+		pt.pos += vmid * tstep;					// drift
+		pt.vel = vmid + pt.acc * tmid;			// kick
+
+		bounding_box.update(pt.pos);
 	}
 
 }

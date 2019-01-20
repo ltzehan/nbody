@@ -17,8 +17,6 @@ struct Particle {
 
 	Particle(int id, float3 pos, float3 vel, float3 acc) : id(id), pos(pos), vel(vel), acc(acc) {}
 
-	void update();
-
 	static BoundingBox randomize(std::vector<Particle>& ptlist, int n);
 
 };
