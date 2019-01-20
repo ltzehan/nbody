@@ -30,7 +30,7 @@ VTKWriter::VTKWriter(const int n) : n(n) {
 
 void VTKWriter::write(std::vector<Particle>& ptlist) {
 
-	fs::path file = outdir / (std::to_string(frame) + ".vtk");
+	fs::path file = outdir / ("frame-" + std::to_string(frame) + ".vtk");
 
 	std::ofstream outf(file);
 	// VTK file header

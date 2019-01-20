@@ -7,9 +7,9 @@
 
 struct Config {
 	// default simulation configuration
-	int frames = 5;
-	int n = 32;
-	float tstep = 0.1;	// we can worry about physical scales later
+	int frames = 20;
+	int n = 2048;
+	float tstep = 0.5;	// we can worry about physical scales later
 };
 
 struct Simulation {
