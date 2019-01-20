@@ -1,51 +1,35 @@
 #include "octree.h"
 
-// splits the current region into 8 subregions
-void Node::split() {
+const float OCTREE_THETA = 0.75;
+const float PHYS_G = 6.67408E-11;
 
-	hasChildren = true;
+// returns index of child node that encloses this position
+int Node::find_index(float3 pos) {
+	int id = 0;
+	// bitmasking to find index based on Z-order curve
+	if (pos.x > region.center.x)
+		id &= 0x001;
+	if (pos.y > region.center.y)
+		id &= 0x010;
+	if (pos.z > region.center.z)
+		id &= 0x100;
 
-	// half the side length of parent region
-	float3 dim = (region.max_corner - region.min_corner) / 2;
-	float3 center = (region.min_corner + region.max_corner) / 2;
-
-	// use region at children[0] as reference region
-	Region r(region.min_corner, center);
-
-	// assignment of nodes follows a Z-order curve
-	children[0] = new Node(r);
-	children[1] = new Node(r.translate(dim.x, 0, 0));
-	children[2] = new Node(r.translate(0, dim.y, 0));
-	children[3] = new Node(r.translate(dim.x, dim.y, 0));
-	children[4] = new Node(r.translate(0, 0, dim.z));
-	children[5] = new Node(r.translate(dim.x, 0, dim.z));
-	children[6] = new Node(r.translate(0, dim.y, dim.z));
-	children[7] = new Node(r.translate(dim.x, dim.y, dim.z));
-
+	return id;
 }
 
-// returns false if particle does not belong in node
-// otherwise returns true if particle is added to tree
-bool Node::add_particle(Particle pt) {
-
-	if (!region.contains(pt.pos)) {
-		// particle is not in node
-		return false;
-	}
+// recursively adds particle to tree
+void Node::add_particle(const Particle& pt) {
 
 	// otherwise if there are no particles, just directly add to this node
 	if (n >= 1) {
 
-		if (!hasChildren) {
-			// too many particles in region
-			split();
+		int id = find_index(pt.pos);
+		// create new child
+		if (!children[id]) {
+			children[id] = new Node(region.get_subregion(id));
 		}
-
-		for (int i = 0; i < 8; i++) {
-			// recursively add particle
-			bool added = children[i]->add_particle(pt);
-			if (added) break;
-		}
+		
+		children[id]->add_particle(pt);
 	}
 
 	// update center of mass of node
@@ -53,5 +37,37 @@ bool Node::add_particle(Particle pt) {
 	sum_pos += pt.pos;
 	cmass = sum_pos / n;
 
-	return true;
 }
+
+// computes force between appropriate Node-Particle pairs and updates particle accelerations
+void Node::calc_force(Particle& pt) {
+
+	float s = calc_dist(region.center, pt.pos);
+	// Barnes-Hut threshold
+	float theta = region.get_gm() / s;
+	
+	// only evaluate force pair if either
+	// (1): Node is a leaf that represents another particle, or
+	// (2): Node is internal and falls below threshold
+	if ((is_leaf && leaf_id != pt.id) || (!is_leaf && theta <= OCTREE_THETA)) {
+		// heads up, this assumes particle masses of unity
+		
+		float3 r = cmass - pt.pos;			// note direction of gravity
+		float dist = calc_dist(r);
+		float dist3 = dist * dist * dist;	// much faster than using pow()
+		
+		pt.acc += r * (PHYS_G * n / dist3);
+	}
+	else if (!is_leaf) {
+
+		// above threshold; go down to child nodes
+		for (int i = 0; i < 8; i++) {
+			if (children[i]) {
+				// child node exists
+				children[i]->calc_force(pt);
+			}
+		}
+
+	}
+		
+} 

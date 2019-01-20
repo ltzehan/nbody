@@ -4,13 +4,14 @@
 #include "particle.h"
 #include "region.h"
 
-const float OCTREE_THETA = 0.75;
-
 // node of octree
 struct Node {
 
-	Node* children[8];
-	bool hasChildren;
+	Node* children[8] = { NULL };
+	
+	bool is_leaf;
+	// leaf_id is equivalent to the particle id stored at the leaf node
+	int leaf_id;
 
 	// region covered by this node
 	Region region;
@@ -20,15 +21,19 @@ struct Node {
 	float3 sum_pos;	// sum of all child particle positions
 	float3 cmass;	// center of mass
 
-	Node(Region region) : region(region), hasChildren(false), n(0) {}
+	Node(Region region) : region(region), n(0), sum_pos(float3(0, 0, 0)) {}
 
 	~Node() {
 		for (int i = 0; i < 8; i++) {
-			delete children[i];
+			if (children[i] != NULL) {
+				delete children[i];
+			}
 		}
 	}
 	
-	void split();
-	bool add_particle(Particle pt);
+	int find_index(float3 pos);
+	void add_particle(const Particle& pt);
+
+	void calc_force(Particle& pt);
 
 };

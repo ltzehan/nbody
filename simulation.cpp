@@ -58,13 +58,18 @@ void Simulation::out(VTKWriter& vtkw) {
 void Simulation::update() {
 
 	// build tree
-	tree = new Node(bounding_box);
-
+	tree = new Node(bounding_box.to_region());
 	for (auto& pt : ptlist) {
 		tree->add_particle(pt);
 	}
 
+	// update particle properties
+	for (auto& pt : ptlist) {
+		// compute force pairs and update particle acclerations
+		tree->calc_force(pt);
+		// update particle velocities and positions
+		pt.update();
+	}
+
 }
-
-
 

@@ -11,11 +11,14 @@
 #include <random>
 #include "particle.h"
 
-// I'm pretty sure this is already orders of magnitude too big
-#define INF 10E10
+void Particle::update() {
+
+	// update velocities
+
+}
 
 // initialize particle list and randomize properties
-Region Particle::randomize(std::vector<Particle>& ptlist, int n) {
+BoundingBox Particle::randomize(std::vector<Particle>& ptlist, int n) {
 
 	using dstr = std::uniform_real_distribution<float>;
 
@@ -31,10 +34,7 @@ Region Particle::randomize(std::vector<Particle>& ptlist, int n) {
 	std::mt19937 rng(rd());
 
 	// find initial axis aligned bounding box for particles
-	Region bounding_box(
-		float3(INF, INF, INF),
-		float3(-INF, -INF, -INF)
-	);
+	BoundingBox bb;
 
 	// using Plummer model for particles
 	for (int i = 0; i < n; i++) {
@@ -52,16 +52,7 @@ Region Particle::randomize(std::vector<Particle>& ptlist, int n) {
 		);
 
 		// update bounding box
-		auto minc = bounding_box.min_corner;
-		auto maxc = bounding_box.max_corner;
-
-		minc.x = std::min(minc.x, pos.x);
-		minc.y = std::min(minc.y, pos.y);
-		minc.z = std::min(minc.z, pos.z);
-
-		maxc.x = std::max(maxc.x, pos.x);
-		maxc.y = std::max(maxc.y, pos.y);
-		maxc.z = std::max(maxc.z, pos.z);
+		bb.update(pos);
 
 		// rejection sampling for velocities
 		float q;
@@ -87,8 +78,8 @@ Region Particle::randomize(std::vector<Particle>& ptlist, int n) {
 
 		float3 acc;
 
-		ptlist.emplace_back(pos, vel, acc);
+		ptlist.emplace_back(i, pos, vel, acc);
 	}
 
-	return bounding_box;
+	return bb;
 }

@@ -33,7 +33,7 @@ private:
 	void out(VTKWriter& vtkw);
 
 	// for computation purposes 
-	Region bounding_box;
+	BoundingBox bounding_box;
 	Node* tree;
 
 };
