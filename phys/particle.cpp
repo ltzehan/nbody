@@ -11,6 +11,8 @@
 #include <random>
 #include "particle.h"
 
+const float SCALE = 8.0;
+
 // initialize particle list and randomize properties
 BoundingBox Particle::randomize(std::vector<Particle>& ptlist, int n) {
 
@@ -34,7 +36,7 @@ BoundingBox Particle::randomize(std::vector<Particle>& ptlist, int n) {
 	for (int i = 0; i < n; i++) {
 
 		// radial distance
-		float r = 0.5 / sqrt(pow(mass_ratio(rng), -0.666666) - 1);
+		float r = SCALE / sqrt(pow(mass_ratio(rng), -0.666666) - 1);
 		// spherical coordinates
 		float azi = azimuth(rng);
 		float elv = acos(elevation(rng)) - M_PI_2;

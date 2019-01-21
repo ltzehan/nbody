@@ -2,6 +2,7 @@
 // Creates new simulation from runtime supplied arguments
 
 #include <string>
+#include "test.h"
 #include "simulation.h"
 
 void print_help() {
@@ -122,24 +123,26 @@ ParseFlag parse_flags(int argc, char* argv[], Config* config) {
 
 int main(int argc, char* argv[]) {
 
-	Config config;
-	// update simulation configuration from runtime arguments
-	auto ret_flag = parse_flags(argc, argv, &config);
+	TEST_NBODY();
 
-	if (ret_flag == ParseFlag::ERR) {
-		printf("Run with flag -h for help\n");
-		return -1;
-	}
-	else if (ret_flag == ParseFlag::HELP) {
-		print_help();
-		return 0;
-	}
-	else if (ret_flag == ParseFlag::OK) {
+	//Config config;
+	//// update simulation configuration from runtime arguments
+	//auto ret_flag = parse_flags(argc, argv, &config);
 
-		Simulation sim(config);
-		sim.start();
+	//if (ret_flag == ParseFlag::ERR) {
+	//	printf("Run with flag -h for help\n");
+	//	return -1;
+	//}
+	//else if (ret_flag == ParseFlag::HELP) {
+	//	print_help();
+	//	return 0;
+	//}
+	//else if (ret_flag == ParseFlag::OK) {
 
-	}
+	//	Simulation sim(config);
+	//	sim.start();
+
+	//}
 
 	return 0;
 }

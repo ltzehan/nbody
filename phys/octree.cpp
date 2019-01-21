@@ -1,18 +1,18 @@
 #include "octree.h"
 
-const float OCTREE_THETA = 0.75;
-const float PHYS_G = 6.67408E-11;
+const float OCTREE_THETA = 0;
+const float PHYS_G = 50;
 
 // returns index of child node that encloses this position
 int Node::find_index(float3 pos) {
 	int id = 0;
 	// bitmasking to find index based on Z-order curve
 	if (pos.x > region.center.x)
-		id &= 0x001;
+		id |= 0b001;
 	if (pos.y > region.center.y)
-		id &= 0x010;
+		id |= 0b010;
 	if (pos.z > region.center.z)
-		id &= 0x100;
+		id |= 0b100;
 
 	return id;
 }
@@ -20,13 +20,18 @@ int Node::find_index(float3 pos) {
 // recursively adds particle to tree
 void Node::add_particle(const Particle& pt) {
 
-	// otherwise if there are no particles, just directly add to this node
+	if (n == 0) {
+		leaf_id = pt.id;
+	}
+	
 	if (n >= 1) {
 
 		int id = find_index(pt.pos);
+
 		// create new child
 		if (!children[id]) {
 			children[id] = new Node(region.get_subregion(id));
+			is_leaf = false;
 		}
 		
 		children[id]->add_particle(pt);
@@ -57,6 +62,7 @@ void Node::calc_force(Particle& pt) {
 		float dist3 = dist * dist * dist;	// much faster than using pow()
 		
 		pt.acc += r * (PHYS_G * n / dist3);
+
 	}
 	else if (!is_leaf) {
 

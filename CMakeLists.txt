@@ -2,7 +2,7 @@
 
 project (nbody)
 
-include_directories (phys util)
+include_directories (phys util test)
 file (GLOB_RECURSE SOURCES "*.cpp")
 
 add_executable (nbody ${SOURCES})

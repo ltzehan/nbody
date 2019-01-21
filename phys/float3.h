@@ -5,6 +5,9 @@
 
 #include <string>
 
+// float comparison tolerance
+const float FLOAT_EPS = 1E-6;
+
 struct float3 {
 
 	float x, y, z;
@@ -19,17 +22,17 @@ struct float3 {
 	}
 
 	// string representation
-	std::string to_string() {
+	std::string to_string() const {
 		return "(" + std::to_string(x) + ", " + std::to_string(y) + ", " + std::to_string(z) + ")";
 	}
 
-	// arithmetic operator overloads
-	friend bool operator< (const float3& f1, const float3& f2) {
-		return (f1.x < f2.x) && (f1.y < f2.y) && (f1.z < f2.z);
+	// operator overloads
+	friend bool operator== (const float3& f1, const float3& f2) {
+		return (abs(f1.x - f2.x) < FLOAT_EPS) && (abs(f1.y - f2.y) < FLOAT_EPS) && (abs(f1.z - f2.z) < FLOAT_EPS);
 	}
 
-	friend bool operator> (const float3& f1, const float3& f2) {
-		return (f1.x > f2.x) && (f1.y > f2.y) && (f1.z > f2.z);
+	friend bool operator!= (const float3& f1, const float3& f2) {
+		return (abs(f1.x - f2.x) > FLOAT_EPS) || (abs(f1.y - f2.y) > FLOAT_EPS) || (abs(f1.z - f2.z) > FLOAT_EPS);
 	}
 
 	friend float3 operator+ (const float3& f1, const float3& f2) {

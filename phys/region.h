@@ -20,7 +20,7 @@ struct Region {
 	// returns geometric mean of Region dimensions
 	// I think this makes sense for a cuboid Region
 	float get_gm() {
-		return pow(dim.x * dim.y * dim.z, 0.333333);
+		return cbrt(dim.x * dim.y * dim.z);
 	}
 
 	// returns a Region corresponding to the child node
@@ -28,11 +28,11 @@ struct Region {
 
 		// find new center of region
 		float3 dr = dim / 4;
-		float dx = dr.x * (child_id & 0x001 ? -1 : 1);
-		float dy = dr.y * (child_id & 0x010 ? -1 : 1);
-		float dz = dr.z * (child_id & 0x100 ? -1 : 1);
+		float dx = dr.x * (child_id & 0b001 ? 1 : -1);
+		float dy = dr.y * (child_id & 0b010 ? 1 : -1);
+		float dz = dr.z * (child_id & 0b100 ? 1 : -1);
 
-		float3 child_center = center - float3(dx, dy, dz);
+		float3 child_center = center + float3(dx, dy, dz);
 		float3 child_dim = dim / 2;
 
 		return Region(child_center, child_dim);
@@ -48,7 +48,6 @@ struct BoundingBox {
 	float3 max_corner;
 
 	BoundingBox() : min_corner(float3(INF, INF, INF)), max_corner(float3(-INF, -INF, -INF)) {}
-	BoundingBox(float3 min, float3 max) : min_corner(min), max_corner(max) {}
 
 	// updates BoundingBox to enclose exterior positions
 	void update(const float3 pos) {

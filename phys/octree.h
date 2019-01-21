@@ -21,11 +21,11 @@ struct Node {
 	float3 sum_pos;	// sum of all child particle positions
 	float3 cmass;	// center of mass
 
-	Node(Region region) : region(region), n(0), sum_pos(float3(0, 0, 0)) {}
+	Node(Region region) : is_leaf(true), region(region), n(0), sum_pos(float3(0, 0, 0)) {}
 
 	~Node() {
 		for (int i = 0; i < 8; i++) {
-			if (children[i] != NULL) {
+			if (children[i]) {
 				delete children[i];
 			}
 		}

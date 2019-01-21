@@ -22,7 +22,6 @@ void Simulation::start() {
 
 	// initialize particles and get initial bounding box of system
 	bounding_box = Particle::randomize(ptlist, n);
-	out(vtkw);
 
 	// end time for simulation initialization
 	auto end_time = Clock::now();
