@@ -8,8 +8,8 @@
 struct Config {
 	// default simulation configuration
 	int frames = 50;
-	int n = 2048;
-	float tstep = 1;
+	int n = 4096;
+	float tstep = 0.05;
 };
 
 struct Simulation {

@@ -11,7 +11,7 @@
 #include <random>
 #include "particle.h"
 
-const float SCALE = 8.0;
+const float SCALE = 1.0;
 
 // initialize particle list and randomize properties
 BoundingBox Particle::randomize(std::vector<Particle>& ptlist, int n) {
@@ -66,11 +66,12 @@ BoundingBox Particle::randomize(std::vector<Particle>& ptlist, int n) {
 		azi = azimuth(rng);
 		elv = acos(elevation(rng)) - M_PI_2;
 
-		float3 vel(
+		/*float3 vel(
 			v * cos(elv) * cos(azi),
 			v * cos(elv) * sin(azi),
 			v * sin(elv)
-		);
+		);*/
+		float3 vel;
 
 		float3 acc;
 

@@ -47,7 +47,7 @@ void Simulation::start() {
 	end_time = Clock::now();
 	elapsed_time = get_elapsed(start_time, end_time);
 
-	printf("Simulation ended (%d frames in %.4fs; FPS = %.2f)\n", frames, elapsed_time, (elapsed_time / frames));
+	printf("Simulation ended (%d frames in %.4fs; FPS = %.2f)\n", frames, elapsed_time, (frames / elapsed_time));
 	getchar();
 }
 

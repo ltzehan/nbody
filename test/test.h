@@ -9,9 +9,9 @@
 
 // this is the pinnacle of unit testing
 #ifdef RUN_TEST_NBODY
-#define TEST_NBODY() nbody_test()
+#define TEST_NBODY(x) nbody_test(x)
 #else
-#define TEST_NBODY()
+#define TEST_NBODY(x)
 #endif
 
 #define TEST_EQ(x, y) { assert_eq((x), (y), __LINE__); }
@@ -99,7 +99,7 @@ namespace {
 
 }
 
-inline void nbody_test() {
+inline void nbody_test(bool abort) {
 
 	printf(">> Running tests\n");
 
@@ -108,6 +108,8 @@ inline void nbody_test() {
 
 	printf(">> All tests done\n");
 
-	getchar();
-	exit(0);
+	if (abort) {
+		getchar();
+		exit(0);
+	}
 }

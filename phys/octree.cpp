@@ -1,7 +1,7 @@
 #include "octree.h"
 
-const float OCTREE_THETA = 0;
-const float PHYS_G = 50;
+const float OCTREE_THETA = 0.5;
+const float PHYS_G = 1.0;
 
 // returns index of child node that encloses this position
 int Node::find_index(float3 pos) {
